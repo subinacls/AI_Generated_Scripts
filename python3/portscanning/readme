@@ -1,0 +1,13 @@
+This class was created based off the constructs:
+  Single port connection through a socket.
+    Expanding the idea further
+      Take a list of ports or use default list
+      Create a list of IP addresses from a cidr range using ipaddress module
+      Adding concurrency using concurrency module
+      
+After iterations of execution testing and identifying where errors were based on OS or code
+The AI produced a semi-legitimate version which still required the human element to review and edit the code
+  The final fault was the a single location which needed to be wrappend in str()
+  
+The class creatred is pretty quick and I am sure it could be faster in C like languages, go - whatever your choice
+I believe there is still some additional features which could be added like a scapy module to syn scan.
