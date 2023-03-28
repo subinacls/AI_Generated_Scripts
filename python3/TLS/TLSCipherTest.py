@@ -61,5 +61,5 @@ class SSLTLSTestCase(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
 
- # Tested against python 3.11 or >
+# Tested against python 3.11 or >
 # Example: python3 TLSCipherTest.py www.google.com 443
