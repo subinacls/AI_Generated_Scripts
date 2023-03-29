@@ -62,4 +62,4 @@ if __name__ == "__main__":
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
 
 # Tested against python 3.11 or >
-# Example: python3 TLSCipherTest.py www.google.com 443
+# Example: python3 python_ssl_TLSScanner.py www.google.com 443
