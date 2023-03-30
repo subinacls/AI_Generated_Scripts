@@ -53,5 +53,5 @@ function view_configmap() {
       return 1
     fi
   fi
-  oc get configmap $configmap -n $namespace -o json | jq '.data | .. | . ' | xargs -0 echo -e;
+  oc get configmap $configmap -n $namespace -o json | jq '.data | . | . ' | xargs -0 echo -e;
 }; # view_configmap myproject myconfigmap
