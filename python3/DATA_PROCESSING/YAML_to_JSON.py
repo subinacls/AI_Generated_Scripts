@@ -1,3 +1,25 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <podname>"
+    exit 1
+fi
+
+podname=$1
+
+# Get the describe output
+describe_output=$(oc describe pod/$podname)
+
+# Replace tabs with spaces (required by Python's json.loads function)
+describe_output=${describe_output//$'\t'/' '}
+
+# Convert the describe output to JSON using Python
+json_output=$(python3 -c "import sys, yaml, json; json.dump(yaml.safe_load(sys.stdin), sys.stdout)")
+
+echo "$json_output"
+
+
+
 #!/usr/bin/env python3
 import sys
 import yaml
