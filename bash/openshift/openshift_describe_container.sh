@@ -17,26 +17,22 @@ If the user selects 'ALL' for pods and a specific container, the function displa
 If the user selects 'ALL' for both pods and containers, the function displays the description of all pods in the current namespace.
 To use the function, you can either add the script to your .bashrc or .bash_profile file or run the script directly in your terminal session. Once the function is available, you can call it using:
 
-bash
-Copy code
-openshift_describe [pod_name] [container_name]
+  openshift_describe [pod_name] [container_name]
+
 Where pod_name and container_name are optional arguments. If you don't provide any arguments, the function will guide you through an interactive selection process.
 
 For example:
+    # Interactive mode without any arguments
+    openshift_describe_container
 
-bash
-Copy code
-# Interactive mode without any arguments
-openshift_describe_container
+    # Specify a pod and container name directly
+    openshift_describe_container my-pod my-container
 
-# Specify a pod and container name directly
-openshift_describe_container my-pod my-container
+    # Specify a pod name and select container interactively
+    openshift_describe_container my-pod
 
-# Specify a pod name and select container interactively
-openshift_describe_container my-pod
-
-# Specify a container name and select pod interactively
-openshift_describe_container "" my-container
+    # Specify a container name and select pod interactively
+    openshift_describe_container "" my-container
 """
 
 function openshift_describe_container() {
@@ -44,7 +40,6 @@ function openshift_describe_container() {
   local container_name="$2"
   local selected_pod=""
   local selected_container=""
-
   if [[ -z "$pod_name" ]]; then
     echo "Pods:"
     local pods=($(oc get pods -o jsonpath='{.items[*].metadata.name}'))
@@ -82,7 +77,6 @@ function openshift_describe_container() {
   else
     selected_container="$container_name"
   fi
-
   if [[ "$selected_pod" == "ALL" ]]; then
     if [[ "$selected_container" == "ALL" ]]; then
       oc describe pods
@@ -91,7 +85,7 @@ function openshift_describe_container() {
         echo "=============================="
         echo "Pod: $pod - Container: $selected_container"
         echo "=============================="
-        oc describe pod "$pod" -c "$selected_container"
+        oc describe pod/$pod
       done
     fi
   else
@@ -103,7 +97,7 @@ function openshift_describe_container() {
         oc describe pod "$selected_pod" -c "$container"
       done
     else
-      oc describe pod "$selected_pod" -c "$selected_container"
+      oc describe pod/$selected_pod
     fi
   fi
 }; # openshift_describe_container my-pod my-container
