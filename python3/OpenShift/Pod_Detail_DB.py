@@ -50,3 +50,10 @@ pod_db.update()
 pod_db.dump('pods.json')
 pod = pod_db.search('mypod')
 print(json.dumps(pod, indent=4))
+"""
+This class initializes a PodDB object with a given namespace, which fetches and parses the JSON output of the oc get pods -o json command to store information about all the pods in that namespace in a pods dictionary. The update() method can be used to refresh the contents of the pods dictionary from the OpenShift API server. The search() method can be used to search for a pod by name or label. The dump() and load() methods can be used to save and load the contents of the pods dictionary to and from a file.
+
+To use this class, you can create a PodDB object with the namespace you want to search, and call the update() method to populate the pods dictionary with data from the OpenShift API server. You can then search for a pod by calling the search() method with a name or label as a query parameter. Finally, you can save the pods dictionary to a file using the dump() method, and load it from a file using the load() method.
+
+Note that this class assumes that you have the oc command-line tool installed and configured to access your OpenShift cluster. Also note that the subprocess.check_output() method is used to run the oc command and capture its output as a string. This method may raise an exception if the command fails to execute for any reason.
+"""
