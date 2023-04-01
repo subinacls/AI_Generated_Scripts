@@ -8,16 +8,17 @@ If the container name is "names", the function lists only the container names fo
 Otherwise, the function gets the details for the specified container in the selected pod.
 """
 
-function get_container_info() {
+function get_containers() {
     local PODNAME="$1"
     local CONTAINERNAME="$2"
     local CONTAINERS
 
     if [ -z "$PODNAME" ]; then
         echo "No podname specified, getting list of all pods..."
-        oc get pods
-        read -p "Enter the number of the pod you want to inspect: " podnum
-        PODNAME=$(oc get pods | awk -v n=$podnum 'FNR == n {print $1}')
+        PODS=$(oc get pods | awk '{print $1}' | tail -n +2) #oc get pods
+        select PODNAME in $PODS; do
+            break
+        done
         echo "Selected pod: $PODNAME"
     fi
 
