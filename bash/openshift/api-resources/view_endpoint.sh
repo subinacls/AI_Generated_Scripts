@@ -35,7 +35,8 @@ Enter the number of the Endpoint to view: 2
     ]
   }
 ]
-"""function view_endpoint() {
+"""
+function view_endpoint() {
   local namespace=${1:-$(oc project -q)}
   local endpoint_name=$2
 
