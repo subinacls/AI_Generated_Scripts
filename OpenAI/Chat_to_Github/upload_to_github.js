@@ -23,8 +23,33 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   }
 });
 
-function fetchGeneratedPythonCode() {
-  // Implement this function to fetch the generated Python code from the chat.
+function fetchGeneratedPythonCode(callback) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.executeScript(
+      tabs[0].id,
+      { code: '(' + extractPythonCode.toString() + ')();' },
+      (results) => {
+        callback(results[0]);
+      }
+    );
+  });
+}
+
+function extractPythonCode() {
+  const messages = document.querySelectorAll('.message');
+  const pythonCodeRegex = /^```python([\s\S]*?)```$/;
+  let pythonCode = '';
+
+  for (const message of messages) {
+    const content = message.textContent;
+    const match = content.match(pythonCodeRegex);
+
+    if (match) {
+      pythonCode += match[1] + '\n';
+    }
+  }
+
+  return pythonCode.trim();
 }
 
 async function getAccessToken() {
