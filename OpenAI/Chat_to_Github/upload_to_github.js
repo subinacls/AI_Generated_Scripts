@@ -53,7 +53,58 @@ function extractPythonCode() {
 }
 
 async function getAccessToken() {
-  // Implement this function to fetch the user's GitHub access token.
+  const clientId = "<YOUR_CLIENT_ID>";
+  const clientSecret = "<YOUR_CLIENT_SECRET>";
+  const redirectUri = `https://${chrome.runtime.id}.chromiumapp.org/callback`;
+
+  return new Promise(async (resolve, reject) => {
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=repo&redirect_uri=${redirectUri}`;
+
+    chrome.identity.launchWebAuthFlow({ url: authUrl, interactive: true }, async (redirectUrl) => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        reject("Error during authentication.");
+        return;
+      }
+
+      const urlParams = new URLSearchParams(redirectUrl.split("?")[1]);
+      const code = urlParams.get("code");
+
+      if (!code) {
+        reject("Error getting authorization code.");
+        return;
+      }
+
+      const response = await fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code: code,
+          redirect_uri: redirectUri,
+        }),
+      });
+
+      if (!response.ok) {
+        reject("Error getting access token.");
+        return;
+      }
+
+      const data = await response.json();
+      const accessToken = data.access_token;
+
+      if (!accessToken) {
+        reject("Error getting access token.");
+        return;
+      }
+
+      resolve(accessToken);
+    });
+  });
 }
 
 async function createPrivateRepo(accessToken, repoName) {
@@ -68,4 +119,3 @@ async function createPrivateRepo(accessToken, repoName) {
       private: true,
     }),
   });
-
