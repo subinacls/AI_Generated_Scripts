@@ -1,12 +1,15 @@
 To use and install the Python Code Uploader browser extension, follow these steps:
 
   Create the extension files: Create a new folder on your computer:
+  
     manifest.json
     popup.html
     popup.js
     upload_to_github.js
 
-  Add icons: Create the necessary icons for your extension (icon16.png, icon48.png, and icon128.png) and place them in the extension folder.
+  Add icons: 
+  
+      Create the necessary icons for your extension (icon16.png, icon48.png, and icon128.png) and place them in the extension folder.
 
   Load the extension in your browser:
     
