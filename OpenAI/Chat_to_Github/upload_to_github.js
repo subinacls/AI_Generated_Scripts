@@ -1,19 +1,18 @@
 const API_BASE = "https://api.github.com";
 
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-  if (request.action === "uploadCode") {
-    const { repoName } = request;
-
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  if (message.action === "uploadCode") {
+    const { repoName } = message;
     const code = fetchGeneratedPythonCode();
-
     const accessToken = await getAccessToken();
+
     if (!accessToken) {
       alert("Access token not found. Please authenticate with GitHub.");
       return;
     }
 
     try {
-      const repo = await createPrivateRepo(accessToken, repoName);
+      const repo = await getExistingRepo(accessToken, repoName);
       await uploadPythonCode(accessToken, repo, code);
       alert("Python code successfully uploaded!");
     } catch (error) {
@@ -106,16 +105,71 @@ async function getAccessToken() {
     });
   });
 }
+async function getExistingRepo(accessToken, repoName) {
+  const response = await fetch(`https://api.github.com/repos/${repoName}`, {
+    headers: {
+      Authorization: `token ${accessToken}`,
+    },
+  });
 
-async function createPrivateRepo(accessToken, repoName) {
-  const response = await fetch(`${API_BASE}/user/repos`, {
+  if (!response.ok) {
+    throw new Error(`Error fetching repo: ${response.statusText}`);
+  }
+
+  return await response.json();
+}
+
+async function uploadPythonCode(accessToken, repo, code) {
+  const { git: { trees, commits } } = repo.default_branch;
+  const treeResponse = await fetch(`https://api.github.com/repos/${repo.full_name}/git/trees/${trees.sha}`, {
+    headers: {
+      Authorization: `token ${accessToken}`,
+    },
+  });
+  const baseTree = await treeResponse.json();
+
+  const createTreeResponse = await fetch(`https://api.github.com/repos/${repo.full_name}/git/trees`, {
     method: "POST",
     headers: {
       Authorization: `token ${accessToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: repoName,
-      private: true,
+      base_tree: baseTree.sha,
+      tree: [
+        {
+          path: "generated_code.py",
+          mode: "100644",
+          type: "blob",
+          content: code,
+        },
+      ],
     }),
   });
+  const newTree = await createTreeResponse.json();
+
+  const createCommitResponse = await fetch(`https://api.github.com/repos/${repo.full_name}/git/commits`, {
+    method: "POST",
+    headers: {
+      Authorization: `token ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: "Upload generated Python code",
+      tree: newTree.sha,
+      parents: [commits.sha],
+    }),
+  });
+  const newCommit = await createCommitResponse.json();
+
+  await fetch(`https://api.github.com/repos/${repo.full_name}/git/refs/heads/${repo.default_branch}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `token ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      sha: newCommit.sha,
+    }),
+  });
+}
