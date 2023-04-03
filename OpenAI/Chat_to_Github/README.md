@@ -1,6 +1,6 @@
 To use and install the Python Code Uploader browser extension, follow these steps:
 
-    Create the extension files: Create a new folder on your computer:
+    Create a new folder on your computer and add these files
       manifest.json
       popup.html
       popup.js
@@ -8,7 +8,11 @@ To use and install the Python Code Uploader browser extension, follow these step
 
   Add icons: 
   
-      Create the necessary icons for your extension (icon16.png, icon48.png, and icon128.png) and place them in the extension folder.
+    Create the necessary icons for your extension
+        icon16.png
+        icon48.png
+        icon128.png
+    and place them in the extension folder.
 
   Load the extension in your browser:
     
