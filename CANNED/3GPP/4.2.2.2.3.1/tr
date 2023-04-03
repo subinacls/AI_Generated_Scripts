@@ -1,0 +1,5 @@
+If the network product under test verifies that the integrity of the access token and the audience claim are valid, but the scope does not match the requested service operation, the network product should reject the access token and deny the request.
+
+In this scenario, the network product under test would usually return an error message, such as a "Forbidden" or "Insufficient scope" response, to the NF service consumer. This error indicates that the access token provided in the NF Service Request does not grant permission for the specific service operation requested, and the consumer must obtain a valid access token with the correct scope to access the desired resource or service.
+
+To resolve this issue, the NF service consumer should ensure that they are requesting an access token with the appropriate scope for the network product under test and the specific service operation. If necessary, the consumer should update their access token request process to include the correct scope information. Additionally, the NF service consumer should verify that their credentials grant them permission to request the desired scope.
