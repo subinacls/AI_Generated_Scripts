@@ -3,7 +3,7 @@
   "name": "Python Code Uploader",
   "version": "1.0",
   "description": "Uploads generated Python code to a private GitHub repo.",
-  "permissions": ["storage", "https://api.github.com/"],
+  "permissions": ["storage", "https://api.github.com/", "activeTab"],
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
