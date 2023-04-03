@@ -1,3 +1,10 @@
+"""
+This function first attempts to use the ps command to get process information,
+then falls back to using the top command if ps is not available,
+and finally examines the /proc folder to get process information if neither ps nor top is available.
+The function returns the process IDs of any unknown processes it finds,
+or an error message if no unknown processes are found.
+"""
 get_unknown_process_id() {
     # Attempt to use 'ps' to get process information
     if command -v ps >/dev/null; then
