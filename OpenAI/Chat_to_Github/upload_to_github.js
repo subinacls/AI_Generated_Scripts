@@ -4,9 +4,9 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "uploadCode") {
     const { repoName } = request;
 
-    const code = fetchGeneratedPythonCode(); // Implement this function to fetch the generated Python code from the chat.
+    const code = fetchGeneratedPythonCode();
 
-    const accessToken = await getAccessToken(); // Implement this function to fetch the user's GitHub access token.
+    const accessToken = await getAccessToken();
     if (!accessToken) {
       alert("Access token not found. Please authenticate with GitHub.");
       return;
