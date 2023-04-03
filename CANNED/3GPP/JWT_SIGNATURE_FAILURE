@@ -1,0 +1,24 @@
+When the integrity verification of the access token by the network product under test fails due to an incorrect signature or MAC, it typically means that the token cannot be trusted. In this scenario, the following steps should be taken:
+
+    Authentication failure: 
+      The network product under test should recognize the access token as invalid since the signature or MAC does not match the expected value.
+
+    Error response: 
+      The network product should respond to the NF service consumer with an error message or status code, 
+      indicating that the access token provided is invalid or untrusted. This could be an HTTP 401 Unauthorized 
+      or a custom error message depending on the implementation.
+
+    Logging and monitoring: 
+      It is essential to log and monitor such incidents to detect any patterns of unauthorized access attempts or potential security vulnerabilities.
+
+    Security measures:
+      Ensure that the implementation of the authentication and authorization mechanisms is secure and follows best practices.
+      This may include using strong cryptographic algorithms, regularly updating cryptographic keys, and adhering to industry standards such as OAuth 2.0.
+
+    Notification:
+      Depending on the severity of the incident and the potential impact on the system, it may be necessary to notify relevant stakeholders, 
+      such as security teams, administrators, or even end-users, about the issue.
+
+    Review and assessment: 
+      Perform regular reviews and assessments of the system to ensure it is up-to-date with the latest security patches and best practices. 
+      This will help minimize the risk of unauthorized access and improve the overall security posture of the network product.
