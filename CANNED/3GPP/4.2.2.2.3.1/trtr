@@ -1,0 +1,5 @@
+If the network product under test verifies that the integrity of the access token is valid, but the audience claim in the access token does not match its identity or type, the network product should reject the access token and deny the request.
+
+In this case, the network product under test would typically return an error message, such as an "Invalid audience" or "Unauthorized" response, to the NF service consumer. This error indicates that the access token provided in the NF Service Request is not intended for the specific network product, and the consumer must obtain a valid access token with the correct audience claim to access the desired resource or service.
+
+To resolve this issue, the NF service consumer should ensure that they are requesting an access token with the appropriate audience claim for the network product under test. If necessary, the consumer should update their access token request process to include the correct audience information.
