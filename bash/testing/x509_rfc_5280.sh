@@ -25,6 +25,41 @@ with the constraints and requirements specified in the standard.
 
 In summary, RFC 5280 provides a comprehensive framework for creating, interpreting, and validating X.509 certificates and CRLs 
 in the Internet PKI, thus ensuring the interoperability and security of digital certificates in various applications.
+
+To test a certificate against RFC 5280, you can use OpenSSL, a widely-used cryptographic library and toolkit. OpenSSL provides 
+tools for handling X.509 certificates and can help ensure that a certificate complies with the constraints and requirements 
+specified in RFC 5280.
+
+Here's a step-by-step guide to testing a certificate against RFC 5280 using OpenSSL:
+
+Obtain the certificate to test. You can either get it from a file, or you can download it from a server by connecting to the hostname 
+and port number. To download the certificate, use the following command:
+
+    echo | openssl s_client -connect example.com:443 -servername example.com 2>/dev/null | openssl x509 -outform PEM > certificate.pem
+
+Replace example.com with the hostname or IP address and 443 with the port number.
+
+Verify the certificate chain. To do this, you'll need the certificate itself and the intermediate and root CA certificates. You can usually 
+download the intermediate and root CA certificates from the CA's website or obtain them from the server. Save these certificates in separate 
+files or concatenate them into a single file.Suppose you have the intermediate and root certificates in a file called ca-bundle.pem. 
+You can now verify the certificate chain using the following command:
+
+    openssl verify -purpose sslserver -CAfile ca-bundle.pem certificate.pem
+
+Test the certificate against RFC 5280 using the -x509_strict flag:
+
+    openssl verify -x509_strict -purpose sslserver -CAfile ca-bundle.pem certificate.pem
+
+This command checks the certificate against the constraints and requirements specified in RFC 5280.
+
+If the certificate complies with RFC 5280, OpenSSL will output a message like this:
+
+    certificate.pem: OK
+
+If the certificate doesn't comply with RFC 5280, OpenSSL will display an error message indicating the issue.
+
+Keep in mind that the OpenSSL verify command only covers a subset of RFC 5280 requirements, and certain checks might not be implemented. 
+However, it is a useful tool to identify common issues and ensure basic compliance with the standard.
 """
 test_rfc5280() {
   if [ $# -lt 2 ] || [ $# -gt 3 ]; then
