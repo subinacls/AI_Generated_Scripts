@@ -25,7 +25,8 @@ with the constraints and requirements specified in the standard.
 
 In summary, RFC 5280 provides a comprehensive framework for creating, interpreting, and validating X.509 certificates and CRLs 
 in the Internet PKI, thus ensuring the interoperability and security of digital certificates in various applications.
-"""test_rfc5280() {
+"""
+test_rfc5280() {
   if [ $# -lt 2 ] || [ $# -gt 3 ]; then
     echo "Usage: test_rfc5280 <ip_or_hostname> <port> [chain_file]"
     return 1
