@@ -34,7 +34,7 @@ test_rfc5280() {
 
   local ip_or_hostname="$1"
   local port="$2"
-  local cert_file="cert.pem"
+  local cert_file="end_entity_cert_spirent_1.pem"
   local chain_file_provided=0
 
   if [ $# -eq 3 ]; then
@@ -50,7 +50,7 @@ test_rfc5280() {
   fi
 
   # Extract the end-entity certificate
-  awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/ { print } NR==4 { exit }' "${chain_file}" > "${cert_file}"
+  awk '/BEGIN CERTIFICATE/{flag=1; certs++} flag{print > "end_entity_cert_spirent_"certs".pem"} /END CERTIFICATE/{flag=0}' "${chain_file}"
 
   # Check if the certificate exists and is not empty
   if [ ! -s "${cert_file}" ]; then
