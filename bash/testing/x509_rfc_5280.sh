@@ -34,7 +34,7 @@ test_rfc5280() {
 
   local ip_or_hostname="$1"
   local port="$2"
-  local cert_file="end_entity_cert_spirent_1.pem"
+  local cert_file="cert.pem"
   local chain_file_provided=0
 
   if [ $# -eq 3 ]; then
@@ -50,7 +50,7 @@ test_rfc5280() {
   fi
 
   # Extract the end-entity certificate
-  awk '/BEGIN CERTIFICATE/{flag=1; certs++} flag{print > "end_entity_cert_spirent_"certs".pem"} /END CERTIFICATE/{flag=0}' "${chain_file}"
+  awk '/BEGIN CERTIFICATE/{flag=1} flag{print > "cert.pem"} /END CERTIFICATE/{flag=0; exit}' "${chain_file}"
 
   # Check if the certificate exists and is not empty
   if [ ! -s "${cert_file}" ]; then
@@ -64,6 +64,7 @@ test_rfc5280() {
   local version=$(openssl x509 -in "${cert_file}" -text -noout 2>/dev/null | grep "Version" | awk '{print $2}')
   if [ "${version}" != "3" ]; then
     echo "Error: The certificate is not X.509v3."
+    openssl x509 -in "${cert_file}" -text -noout
     rm -f "${cert_file}"
     [ $chain_file_provided -eq 0 ] && rm -f "${chain_file}"
     return 1
@@ -78,11 +79,10 @@ test_rfc5280() {
 
   # Check the result
   if [[ "${result}" =~ ": OK" ]]; then
-    echo "Success: The certificate complies with RFC 5280."
+    echo "Success: ${result} The certificate complies with RFC 5280."
     return 0
   else
-    echo "Error: The certificate does not comply with RFC 5280."
-    echo "${result}"
+    echo "Error: ${result} The certificate does not comply with RFC 5280."
     return 1
   fi
 };
