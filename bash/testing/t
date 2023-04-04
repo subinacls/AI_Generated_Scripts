@@ -1,0 +1,47 @@
+RFC 5280 provides a detailed specification for X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile. It outlines several aspects of certificates and CRLs that should be checked for compliance. Here is a summary of the primary points of testing as specified in RFC 5280:
+
+Certificate structure and encoding:
+
+Check that the certificate is ASN.1-encoded and complies with the X.509v3 format.
+Ensure that all mandatory fields (version, serial number, signature algorithm, issuer, validity period, subject, subjectPublicKeyInfo) are present.
+Verify that optional fields (issuerUniqueID, subjectUniqueID, and extensions) are correctly encoded when present.
+Signature algorithm:
+
+Confirm that the certificate's signature algorithm is supported and valid.
+Check the signatureValue field to ensure the certificate's integrity.
+Distinguished names (DNs) and name constraints:
+
+Validate the format and encoding of the issuer and subject DNs.
+Verify that the certificate complies with any name constraints imposed by the issuing CA.
+Validity period:
+
+Check the certificate's notBefore and notAfter fields to ensure that it is currently valid.
+Public key and algorithm:
+
+Ensure that the subjectPublicKeyInfo field contains a supported public key algorithm.
+Verify that the public key meets the requirements for its algorithm, including key length and format.
+Certificate extensions:
+
+Verify that all critical extensions are recognized and processed correctly.
+Check non-critical extensions for proper format and encoding.
+Ensure that specific extensions such as key usage, extended key usage, basic constraints, and subject alternative names comply with their respective requirements.
+Certificate path validation:
+
+Verify the certificate chain up to a trusted root CA, including proper chaining of the issuer and subject fields.
+Check that the certificate path complies with the basic constraints extension (i.e., path length constraints and the CA field).
+Validate that the key usage extension permits the intended use of the certificate (e.g., digital signatures, key encipherment, etc.).
+Process any policy constraints and policy mappings present in the certificate chain.
+Certificate revocation:
+
+Check the certificate's revocation status using either the certificate revocation list (CRL) method or the Online Certificate Status Protocol (OCSP).
+CRL validation:
+
+Verify the CRL's signature, issuer, and validity period.
+Check that the CRL complies with any CRL distribution points specified in the certificate.
+Confirm that the CRL contains the correct extensions, such as CRL number and authority key identifier.
+These are the main points of testing for X.509 certificates as outlined in RFC 5280. However, it's important to note that some checks may not be applicable depending on the specific use case, and not all aspects of RFC 5280 can be automated or tested with readily available tools.
+
+
+
+
+
