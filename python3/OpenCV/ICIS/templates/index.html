@@ -1,0 +1,14 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Authentication</title>
+</head>
+<body>
+    <h1>Welcome to Face Authentication System</h1>
+    <img src="{{ url_for('video_feed', token=token) }}">
+    <br>
+    <a href="{{ url_for('start_authentication', token=token) }}">Start Authentication</a>
+    <a href="{{ url_for('stop_authentication', token=token) }}">Stop Authentication</a>
+</body>
+</html>
