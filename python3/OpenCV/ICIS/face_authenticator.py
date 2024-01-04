@@ -16,7 +16,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 
 class FaceAuthenticator:
-    def __init__(self, camera_indexes=[0], encoding_file='encodings.pkl', output_dir='output', twilio_sid=None, twilio_token=None, twilio_phone_number=None, recipient_phone_number=None, email_config=None, email_interval=60, motion_threshold=100, min_motion_area=700):
+    def __init__(self, camera_indexes=[0], encoding_file='encodings.pkl', output_dir='output', twilio_sid=None, twilio_token=None, twilio_phone_number=None, recipient_phone_number=None, email_config=None, email_interval=60, motion_threshold=100, min_motion_area=700, global_encoding_file='global_encodings.pkl'):
         self.camera_indexes = camera_indexes
         self.encoding_file = encoding_file
         self.face_encodings = self.load_encodings()
@@ -48,6 +48,7 @@ class FaceAuthenticator:
         self.motion_threshold = motion_threshold
         self.min_motion_area = min_motion_area
         self.background_subtractor = cv2.createBackgroundSubtractorMOG2(detectShadows=True)
+        self.face_tracker = FaceTracker(global_encoding_file)
 
     def send_email(self, subject, body, image_path):
         def email_task(subject, body, image_path):
@@ -152,6 +153,8 @@ class FaceAuthenticator:
             self.save_motion_frames_as_video(camera_index)
             self.motion_frames = []
             self.last_video_save_time = datetime.datetime.now()        
+        # Track user across different streams
+        self.face_tracker.update_encodings(frame)
         # Detect faces using MTCNN
         results = self.detector.detect_faces(frame)
         for result in results:
