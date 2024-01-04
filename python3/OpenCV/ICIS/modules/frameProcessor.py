@@ -3,9 +3,11 @@ import datetime
 import os
 import face_recognition
 from mtcnn.mtcnn import MTCNN
+from faceTracker import FaceTracker
+
 
 class FrameProcessor:
-    def __init__(self, output_dir, email_interval, face_encodings):
+    def __init__(self, output_dir, email_interval, face_encodings, global_encoding_file='global_encodings.pkl'):
         self.motion_frames = []
         self.last_video_save_time = datetime.datetime.now()
         self.output_dir = output_dir
@@ -13,6 +15,7 @@ class FrameProcessor:
         self.face_encodings = face_encodings
         self.last_email_sent = {}
         self.detector = MTCNN()
+        self.face_tracker = FaceTracker(global_encoding_file)
 
     def detect_motion(self, frame):
         # Implement the motion detection logic
@@ -22,6 +25,9 @@ class FrameProcessor:
     def process_frame(self, frame, camera_index):
         unknown_detected = False
 
+        # Track user across different streams
+        self.face_tracker.update_encodings(frame)
+        
         # Motion Detection
         motion_detected = self.detect_motion(frame)
         if motion_detected:
