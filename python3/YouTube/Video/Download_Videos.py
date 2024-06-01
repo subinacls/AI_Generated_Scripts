@@ -19,9 +19,7 @@ def download_video(url, output_path, venv_path):
     activate_script = os.path.join(venv_path, 'bin', 'activate_this.py') if os.name != 'nt' else os.path.join(venv_path, 'Scripts', 'activate_this.py')
     with open(activate_script) as file_:
         exec(file_.read(), dict(__file__=activate_script))
-
     from pytube import YouTube  # Import here after activating the virtual environment
-
     try:
         yt = YouTube(url)
         video = yt.streams.get_highest_resolution()
@@ -41,6 +39,5 @@ if __name__ == "__main__":
     parser.add_argument("url", help="URL of the YouTube video")
     parser.add_argument("output_path", help="Path to save the downloaded video and create virtual environment")
     args = parser.parse_args()
-    
     main(args.url, args.output_path)
 
