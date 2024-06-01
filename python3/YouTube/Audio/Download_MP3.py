@@ -24,33 +24,6 @@ def install_packages(venv_path):
     print("Installing required packages...")
     subprocess.run([pip_executable, 'install', 'git+https://github.com/pytube/pytube', 'pydub', 'mutagen'])
 
-def download_video(url, output_path):
-    from pytube import YouTube
-    yt = YouTube(url)
-    video = yt.streams.filter(only_audio=True).first()
-    downloaded_file = video.download(output_path=output_path)
-    return downloaded_file, yt
-
-def convert_to_mp3(input_file, output_file, metadata):
-    from pydub import AudioSegment
-    from mutagen.easyid3 import EasyID3
-    audio = AudioSegment.from_file(input_file)
-    audio.export(output_file, format="mp3")
-    os.remove(input_file)
-    audio_file = EasyID3(output_file)
-    audio_file['title'] = metadata.get('title', 'Unknown Title')
-    audio_file['artist'] = metadata.get('author', 'Unknown Artist')
-    audio_file['album'] = metadata.get('title', 'Unknown Album')
-    audio_file['genre'] = metadata.get('category', 'Unknown Genre')
-    audio_file['date'] = metadata.get('publish_date', 'Unknown Date')
-    audio_file.save()
-
-def save_metadata(metadata, output_path):
-    metadata_file = os.path.join(output_path, "metadata.json")
-    with open(metadata_file, 'w') as f:
-        json.dump(metadata, f, indent=4)
-    print(f"Metadata saved to {metadata_file}")
-
 def main(url, output_path):
     check_ffmpeg()
     venv_path = os.path.join(output_path, 'venv')
