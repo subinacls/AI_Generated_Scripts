@@ -16,17 +16,29 @@ def install_packages(venv_path):
     subprocess.run([pip_executable, 'install', 'git+https://github.com/pytube/pytube'])
 
 def download_video(url, output_path, venv_path):
-    activate_script = os.path.join(venv_path, 'bin', 'activate_this.py') if os.name != 'nt' else os.path.join(venv_path, 'Scripts', 'activate_this.py')
-    with open(activate_script) as file_:
-        exec(file_.read(), dict(__file__=activate_script))
-    from pytube import YouTube  # Import here after activating the virtual environment
+    python_executable = os.path.join(venv_path, 'bin', 'python') if os.name != 'nt' else os.path.join(venv_path, 'Scripts', 'python.exe')
+    download_script = f"""
+import sys
+from pytube import YouTube
+
+def download_video(url, output_path):
     try:
         yt = YouTube(url)
         video = yt.streams.get_highest_resolution()
-        output_file = video.download(output_path=output_path)
-        print(f"Downloaded '{yt.title}' successfully!")
+        video.download(output_path=output_path)
+        print(f"Downloaded '{{yt.title}}' successfully!")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred: {{e}}")
+
+if __name__ == "__main__":
+    url = sys.argv[1]
+    output_path = sys.argv[2]
+    download_video(url, output_path)
+"""
+    with open("download_script.py", "w") as f:
+        f.write(download_script)
+    subprocess.run([python_executable, "download_script.py", url, output_path])
+    os.remove("download_script.py")
 
 def main(url, output_path):
     venv_path = os.path.join(output_path, 'venv')
