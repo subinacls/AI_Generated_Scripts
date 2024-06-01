@@ -1,7 +1,8 @@
 
 It seems you are in an environment where installing Python packages system-wide is restricted. You can resolve this by using a virtual environment. Here’s how you can do it:
 
-1. Create a virtual environment:
+1. Create a working environment:
+- apt install ffmpeg python3-venv
 - python3 -m venv myenv
 
 2. Activate the virtual environment:
