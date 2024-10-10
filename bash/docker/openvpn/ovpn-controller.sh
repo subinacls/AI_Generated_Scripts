@@ -24,9 +24,32 @@ openvpn_genconfig() {
   # -e "port-share $extIP 4433"
 }
 
+
+# Function to list clients
+openvpn_listclients() {
+  docker run --rm -it -v $PWD:/etc/openvpn kylemanna/openvpn ovpn_listclients
+}
+
 # Function to start OpenVPN
 openvpn_start() {
   docker run -v $PWD:/etc/openvpn -d -p 443:1194/tcp --cap-add=NET_ADMIN kylemanna/openvpn --name openvpn
+}
+
+# Function to get all clients currently configured from the system
+opevpn_getclientall() {
+  docker run --rm -it -v $PWD:/etc/openvpn --volume /tmp/openvpn_clients:/etc/openvpn/clients kylemanna/openvpn ovpn_getclient_all
+}
+
+# Function to revoke user from PKI, uses CRL
+openvpn_revoke() {
+  local username=$1
+  docker run --rm -it -v $PWD:/etc/openvpn kylemanna/openvpn ovpn_revokeclient $username
+}
+
+# Function to revoke and remove user from PKI, uses CRL
+openvpn_remove() {
+  local username=$1
+  docker run --rm -it -v $PWD:/etc/openvpn kylemanna/openvpn ovpn_revokeclient $username remove
 }
 
 # Function to enter bash shell in the OpenVPN container
@@ -67,8 +90,17 @@ case "$1" in
   getclient)
     openvpn_getclient "$2"
     ;;
+  getclientall)
+    openvpn_getclientall
+    ;;
   genconfig)
     openvpn_genconfig "$2"
+    ;;
+  revoke)
+    openvpn_revoke
+    ;;
+  remove)
+    openvpn_remove
     ;;
   start)
     openvpn_start
@@ -79,7 +111,10 @@ case "$1" in
   logs)
     openvpn_logs
     ;;
+  listclients)
+    openvpn_listclients
+    ;;
   *)
-    echo "Usage: $0 {init|makeuser|getclient|genconfig|start|shell|logs} [arguments]"
+    echo "Usage: $0 {init|makeuser|getclient|getclientall|genconfig|revoke|remove|start|shell|listclients|logs} [arguments]"
     ;;
 esac
