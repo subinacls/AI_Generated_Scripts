@@ -24,7 +24,6 @@ openvpn_genconfig() {
   # -e "port-share $extIP 4433"
 }
 
-
 # Function to list clients
 openvpn_listclients() {
   docker run --rm -it -v $PWD:/etc/openvpn kylemanna/openvpn ovpn_listclients
@@ -50,6 +49,32 @@ openvpn_revoke() {
 openvpn_remove() {
   local username=$1
   docker run --rm -it -v $PWD:/etc/openvpn kylemanna/openvpn ovpn_revokeclient $username remove
+}
+
+# Function to backup the openvpn
+openvpn_backup() {
+  docker run -v $PWD:/etc/openvpn --rm kylemanna/openvpn tar -cvf - -C /etc openvpn | xz > openvpn-backup.tar.xz
+}
+
+# Function to restore the openvpn
+openvpn_backup() {
+  xzcat openvpn-backup.tar.xz | docker run -v $PWD:/etc/openvpn -i kylemanna/openvpn tar -xvf - -C /etc
+}
+
+# Function to stop and remove the OpenVPN container
+openvpn_stop() {
+  # Get the container ID or name
+  local container_name="kylemanna/openvpn"
+  local container_id=$(docker ps -qf "ancestor=$container_name")
+  # Check if the container is running
+  if [ -n "$container_id" ]; then
+    echo "Stopping and removing OpenVPN container ($container_id)..."
+    docker stop $container_id
+    docker rm $container_id
+    echo "OpenVPN container stopped and removed."
+  else
+    echo "OpenVPN container is not running."
+  fi
 }
 
 # Function to enter bash shell in the OpenVPN container
@@ -115,6 +140,6 @@ case "$1" in
     openvpn_listclients
     ;;
   *)
-    echo "Usage: $0 {init|makeuser|getclient|getclientall|genconfig|revoke|remove|start|shell|listclients|logs} [arguments]"
+    echo "Usage: $0 {init|backup|getclient|getclientall|genconfig|makeuser|restore|revoke|remove|start|stop|shell|listclients|logs} [arguments]"
     ;;
 esac
