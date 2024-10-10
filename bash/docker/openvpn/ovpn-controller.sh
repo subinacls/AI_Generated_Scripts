@@ -133,6 +133,9 @@ case "$1" in
   shell)
     opevpn_shell
     ;;
+  stop)
+    openvpn_stop
+    ;;
   logs)
     openvpn_logs
     ;;
