@@ -1,3 +1,4 @@
+'''
 import subprocess
 import sys
 from logger_manager import LoggerManager
@@ -10,7 +11,7 @@ else:
 
 # Initialize the logger
 logger = LoggerManager()
-
+'''
 class MSFhandler:
     def __init__(self):
         logger.log('Entering: MSFhandler()', 'info')
