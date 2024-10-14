@@ -12,12 +12,37 @@ else:
 # Initialize logger
 logger = LoggerManager()
 '''
-
 def cleanup():
     """
-    Placeholder for cleanup routine.
-    This function should handle any necessary cleanup when the user attempts to exit.
+    Handles necessary cleanup before exiting the application.
+    Add specific cleanup tasks such as closing files, stopping threads, etc.
     """
     logger.log('Running cleanup routine...', 'info')
-    # Add actual cleanup tasks here (closing files, releasing resources, etc.)
-    pass
+    
+    # Example: Close any open files
+    try:
+        # If there are open files in the global scope (or known resources), close them here
+        if 'open_file' in globals() and not open_file.closed:
+            logger.log('Closing open file...', 'info')
+            open_file.close()
+    except Exception as e:
+        logger.log('Error closing file: {}'.format(e), 'error')
+
+    # Example: Stop background threads or jobs
+    try:
+        if 'scheduler' in globals():
+            logger.log('Shutting down scheduler...', 'info')
+            scheduler.shutdown()  # If you have a scheduler running, ensure it stops gracefully
+    except Exception as e:
+        logger.log('Error stopping scheduler: {}'.format(e), 'error')
+    
+    # Example: Close sockets or network connections
+    try:
+        if 'socket' in globals():
+            logger.log('Closing network socket...', 'info')
+            socket.close()
+    except Exception as e:
+        logger.log('Error closing socket: {}'.format(e), 'error')
+    
+    # Add any additional cleanup tasks as required
+    logger.log('Cleanup completed.', 'info')
