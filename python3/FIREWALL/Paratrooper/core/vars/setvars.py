@@ -1,36 +1,41 @@
-import __builtin__ as bi
-
-### SET VARS ####
 '''
-Sets some basic static values assigned to the server globally
-Sets server port Paratrooper listens on:
-    serverport = 6543
-Sets diagnostics output of various modules within the application if true
-    diag = True
-Available for the entire application when global is used
+import sys
+import datetime
 
-Diagnostics needs to be initialized outside of any try/except
+# Ensure compatibility between Python 2 and 3 for builtins
+if sys.version_info[0] < 3:
+    import __builtin__ as bi  # Python 2
+else:
+    import builtins as bi     # Python 3
+
+### SET VARS ###
+Sets some basic static values assigned to the server globally.
 '''
+
 try:
-    bi.enableserver = True  ## Ensure the server is enabled at start
-    bi.enablesniffer = True  ## Default value set for the sniffing capabilities
-    bi.threadlist = list()  ## Makes default thread list
-    bi.serverport = 6543  ## Set the serverport var to reflect the bi.serverport contents
-    serverport = bi.serverport  ## Set the servers port where the server is listening
-    bi.initday = str(datetime.datetime.now()).split()[0]  ## Set the initial date
-    initday = bi.initday  ## Set the initday var to reflect the bi.initday contents
-    bi.revports = list()  ## Sets useful list to identify any listening MSF handler ports
-    bi.shelled = list()  ## Sets useful list to identify any established connections to MSF handler
-    bi.ipsetmsflist = list()  ## Sets a list of current ip addresses within the msfshell group of ipset
-    bi.DET = 0
-    if bi.diag:
-        print 'VAR diag: %s' % diag
-        print 'VAR serverport: %s' % serverport
-        print 'VAR initday: %s' % initday
-        print 'VAR bi.revports: %s' % bi.revports
-        print 'VAR bi.shelled: %s' % bi.shelled
-        print 'VAR bi.ipsetmsflist: %s' % bi.ipsetmsflist
+    # Initialize global variables
+    bi.enableserver = True  # Ensure the server is enabled at start
+    bi.enablesniffer = True  # Default value set for the sniffing capabilities
+    bi.threadlist = list()  # Create default thread list
+    bi.serverport = 6543  # Set the server port to 6543
+    serverport = bi.serverport  # Local variable reflecting the global serverport
+    bi.initday = str(datetime.datetime.now()).split()[0]  # Get and set the initial date
+    initday = bi.initday  # Local variable reflecting the global initday
+    bi.revports = list()  # List of listening MSF handler ports
+    bi.shelled = list()  # List of established connections to MSF handler
+    bi.ipsetmsflist = list()  # List of current IP addresses within the MSF shell group
+    bi.DET = 0  # A global diagnostic variable
+
+    # Output diagnostics if enabled
+    if getattr(bi, 'diag', False):  # Check if diagnostics are enabled
+        print("VAR diag: {}".format(bi.diag))
+        print("VAR serverport: {}".format(serverport))
+        print("VAR initday: {}".format(initday))
+        print("VAR bi.revports: {}".format(bi.revports))
+        print("VAR bi.shelled: {}".format(bi.shelled))
+        print("VAR bi.ipsetmsflist: {}".format(bi.ipsetmsflist))
+
 except Exception as setvarsfailed:
-    if bi.diag:
-        print 'Setting variables failed: %s' % setvarsfailed
-    sys.exit(0)
+    if getattr(bi, 'diag', False):  # Check if diagnostics are enabled
+        print("Setting variables failed: {}".format(setvarsfailed))
+    sys.exit(1)  # Use exit(1) to indicate an error occurred
