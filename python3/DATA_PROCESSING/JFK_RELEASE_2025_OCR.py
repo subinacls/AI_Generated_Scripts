@@ -1,9 +1,18 @@
+#########
+#            
+#    JFK release 2025 downloader and OCR parser. 
+#    Not the best, but what really is - 
+#    Does a decent job but due to quality, hand writing, redactions, or other errors
+#    Can misrepresent what the words and or letters:
+#        (Language: [spanish vs englishe], 
+#        Characters: [May identify incorrect character set])
+#    
+##########
 import os
 import requests
 from bs4 import BeautifulSoup
 import PyPDF2
 import io
-
 from pdf2image import convert_from_bytes
 import pytesseract
 
